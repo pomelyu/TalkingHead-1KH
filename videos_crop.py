@@ -24,12 +24,13 @@ parser.add_argument('--num_workers', type=int, default=8,
 args = parser.parse_args()
 
 
-def get_h_w(filepath):
+def get_h_w_fps(filepath):
     probe = ffmpeg.probe(filepath)
     video_stream = next((stream for stream in probe['streams'] if stream['codec_type'] == 'video'), None)
     height = int(video_stream['height'])
     width = int(video_stream['width'])
-    return height, width
+    fps = eval(video_stream["r_frame_rate"])
+    return height, width, fps
 
 
 def trim_and_crop(input_dir, output_dir, clip_params):
@@ -46,13 +47,17 @@ def trim_and_crop(input_dir, output_dir, clip_params):
         print('Input file %s does not exist, skipping' % (input_filepath))
         return
 
-    h, w = get_h_w(input_filepath)
+    h, w, fps = get_h_w_fps(input_filepath)
+    if E - S < fps:
+        return
+
     t = int(T / H * h)
     b = int(B / H * h)
     l = int(L / W * w)
     r = int(R / W * w)
     stream = ffmpeg.input(input_filepath)
     stream = ffmpeg.trim(stream, start_frame=S, end_frame=E+1)
+    stream = ffmpeg.setpts(stream, "PTS-STARTPTS")
     stream = ffmpeg.crop(stream, l, t, r-l, b-t)
     stream = ffmpeg.output(stream, output_filepath)
     ffmpeg.run(stream)

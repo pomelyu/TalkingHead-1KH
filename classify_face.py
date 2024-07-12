@@ -18,7 +18,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("datafolder", type=str, help="path to image folder")
     parser.add_argument("output", type=str, help="output folder")
-    parser.add_argument("--min_frames", type=int, default=60, help="discard videos with fewer frames")
+    parser.add_argument("--min_frames", type=int, default=30, help="discard videos with fewer frames")
     parser.add_argument("--min_face_ratio", type=float, default=0.3, help="minimum face size compare to image size")
     parser.add_argument("--similarity_thres", type=float, default=0.6, help="similarity threshold for face recognition")
     args = parser.parse_args()

@@ -41,6 +41,9 @@ def main():
     app = FaceAnalysis(providers=['CUDAExecutionProvider', 'CPUExecutionProvider'])
     app.prepare(ctx_id=0, det_size=(640, 640))
 
+    meta_path = output / "meta.txt"
+    meta_file = Path(meta_path).open("a+")
+
     video_files = files_in_folder(datafolder, ext=".mp4")
     for video_path in tqdm(video_files, total=len(video_files)):
         try:
@@ -103,6 +106,13 @@ def main():
                     shutil.move(video_path, output / id)
                     id_database[id] = normalize_vec(vec * 0.9 + vec_video * 0.1)
                     np.save(database_path, id_database)
+                    meta_file.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(
+                        Path(video_path).stem,
+                        id,
+                        *face_start.bbox.astype(np.int32),
+                        *face_mid.bbox.astype(np.int32),
+                        *face_end.bbox.astype(np.int32),
+                    ))
                 is_classified = True
                 break
 
@@ -115,7 +125,15 @@ def main():
             shutil.move(video_path, new_folder)
             id_database[new_id] = vec_video
             np.save(database_path, id_database)
+            meta_file.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(
+                Path(video_path).stem,
+                new_id,
+                *face_start.bbox.astype(np.int32),
+                *face_mid.bbox.astype(np.int32),
+                *face_end.bbox.astype(np.int32),
+            ))
 
+    meta_file.close()
 
 def discard_video(video_path, trash_folder, debug_path, debug_images, reason):
     write_debug_image(debug_path, debug_images, reason)

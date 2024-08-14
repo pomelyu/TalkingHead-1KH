@@ -21,6 +21,7 @@ def main():
     parser.add_argument("--min_frames", type=int, default=30, help="discard videos with fewer frames")
     parser.add_argument("--min_face_ratio", type=float, default=0.3, help="minimum face size compare to image size")
     parser.add_argument("--similarity_thres", type=float, default=0.6, help="similarity threshold for face recognition")
+    parser.add_argument("--id_offset", type=int, default=0, help="offset id in database")
     args = parser.parse_args()
 
     datetime = get_datetime()
@@ -119,7 +120,7 @@ def main():
         if is_classified:
             continue
 
-        new_id = f"id_{len(id_database):0>6d}"
+        new_id = f"id_{len(id_database) + args.id_offset:0>6d}"
         new_folder = mkdir(output / new_id)
         with non_interruptable():
             shutil.move(video_path, new_folder)

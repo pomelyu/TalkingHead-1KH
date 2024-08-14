@@ -47,7 +47,7 @@ def main():
     video_files = files_in_folder(datafolder, ext=".mp4")
     for video_path in tqdm(video_files, total=len(video_files)):
         try:
-            start, mid, end, num_frams = load_video_start_and_end(video_path)
+            start, mid, end, num_frames = load_video_start_and_end(video_path)
         except RuntimeError as err:
             tqdm.write(str(err))
             shutil.move(video_path, trash_folder)
@@ -55,9 +55,9 @@ def main():
 
         debug_images = [start, mid, end]
         debug_path = str(debug_folder / f"{Path(video_path).stem}.jpg")
-        if num_frams < args.min_frames:
+        if num_frames < args.min_frames:
             discard_video(video_path, trash_folder, debug_path, debug_images,
-                          reason=f"Too few frames: {num_frams} < {args.min_frames}")
+                          reason=f"Too few frames: {num_frames} < {args.min_frames}")
             continue
 
         # Validate video

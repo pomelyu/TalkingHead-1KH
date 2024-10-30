@@ -56,7 +56,7 @@ def trim_and_crop(input_dir, output_dir, clip_params):
     l = int(L / W * w)
     r = int(R / W * w)
     stream = ffmpeg.input(input_filepath)
-    stream = ffmpeg.trim(stream, start_frame=S, end_frame=E+1)
+    stream = ffmpeg.trim(stream, start_frame=S+1, end_frame=E-1)
     stream = ffmpeg.setpts(stream, "PTS-STARTPTS")
     stream = ffmpeg.crop(stream, l, t, r-l, b-t)
     stream = ffmpeg.output(stream, output_filepath)

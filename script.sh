@@ -19,4 +19,9 @@ python video_split.py .\
 python videos_crop.py \
     --input_dir data_list/train/train_split_003/1min_clips/ \
     --output_dir data_list/train/train_split_003/cropped_clips \
-    --clip_info_file data_list/train/train_split_003/filtered-512-train_video_tubes.txt
+    --clip_info_file data_list/train/train_split_003/filtered-512-train_video_tubes.txt \
+
+# Classify face
+python classify_face.py \
+    data_list/train/train_split_003/cropped_clips \
+    data_list/processed/train_003 \
